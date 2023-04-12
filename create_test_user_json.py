@@ -11,14 +11,10 @@ gender = ["Male", "Female"]
 
 current_datetime = datetime.now()
 random_grade_index = random.randrange(7)
-year_dob = 2023 - random_grade_index - 5 # b/c kindergarden enterance grade is 5
+year_dob = 2023 - random_grade_index - 5 # b/c kindergarden enterance age is 5
 month_dob = random.randrange(1,13)
 date_dob = random.randrange(1,29)
 full_dob = "{}T00:00:00".format(date(year_dob, month_dob, date_dob))
-
-existing_parent_uuid = "6d4409eb-a3cf-4066-91b9-da79872e1d5d"
-existing_parent_email = "SATestParent_23_03_30_14_35_02@fake.org"
-existing_round_app_id = "a9238e82-80ba-471a-971e-9dee29d1959c"
 
 # set defaults
 run_by = "00ue20xb6g3CZKVCH0h7" # hard-coded as admin
@@ -61,10 +57,17 @@ has_uniform_on_order__c = random.choice(t_f_list) # prompt user or default rando
 interest_in_summer_school__c = random.choice(y_n_list) # prompt user or default randomly pick "Yes"/"No"
 
 # inputs from user
-print("Enter the required user details, or it will default.")
-print("*Asterisk fields are randomly generated.")
-is_new_parent = input("Create with defaults? Y/N (default: Y) = " or "Y")
-if is_new_parent == "N":
+print("----------------------------------------------------")
+print("Use this script to generate fake test users in prod.")
+print("Enter the user details, or it will default.")
+print("Asterisk(*) fields are randomly generated.")
+print("Note: will only generate brand new applications -")
+print("cannot add scholars to existing parents.")
+print("----------------------------------------------------")
+
+
+is_new_parent = input("\nCreate with defaults? Y/N (default: Y) = " or "Y")
+if is_new_parent == "N" or is_new_parent == "n":
     student_first_name__c = input("\t01/17 Student first name (default: {}) = ".format(student_first_name__c)) or student_first_name__c
     student_last_name__c = input("\t02/17 Student last name (default: {}) = ".format(student_last_name__c)) or student_last_name__c
     gender__c = input("\t03/17 Student gender Male/Female (default: {})* = ".format(gender__c)) or gender__c
@@ -82,7 +85,8 @@ if is_new_parent == "N":
     parent_zip_code = input("\t15/17 Zip Code (default: {}) = ".format(parent_zip_code)) or parent_zip_code
     has_uniform_on_order__c = input("\t16/17 Uniform on Order? True/False (default: {})* = ".format(has_uniform_on_order__c)) or has_uniform_on_order__c
     interest_in_summer_school__c = input("\t17/17 Summer School? Yes/No (default: {})* = ".format(interest_in_summer_school__c)) or interest_in_summer_school__c
-
+else:
+    print("Generating with defaults...")
 # create json obj
 applicants_data = {
     "scholar_uuid": scholar_uuid, 
@@ -139,5 +143,7 @@ data = {
 	}]
 }
 
-print("\nGenerated JSON:\n")
+print("\nJSON Object:\n")
 print(json.dumps(data))
+
+print("\nCopy this into the `application-manager-prod-ProcessApplication` lambda")
